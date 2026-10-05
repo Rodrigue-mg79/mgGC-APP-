@@ -3,8 +3,6 @@ import pandas as pd
 import math, os
 from io import BytesIO
 from datetime import datetime
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
-from reportlab.lib.units import cm
 
 # Configuration de la page
 st.set_page_config(page_title="mgGCAPP Express", page_icon="🏗️", layout="wide")
