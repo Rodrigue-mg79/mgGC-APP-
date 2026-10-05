@@ -1,0 +1,7 @@
+streamlit
+panda
+math
+os
+io
+datetime
+reportlab
