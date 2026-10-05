@@ -187,10 +187,6 @@ def generate_pdf_bytes(nom_c, tel_c, proj, surface_t, dos, data_list, tot_ht, de
     doc.build(story)
     buf.seek(0)
     return buf.getvalue()
-
-pdf_bytes = generate_pdf_bytes(
-    nom, tel, type_projet, surf_tot, dosage, data, total_ht, devise,
-    nb_chambres, nb_salons, nb_cuisines, nb_wc, nb_verandas
 )
 
 # 7. ACTION & CONTACT FINAUX
