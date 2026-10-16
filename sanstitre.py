@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
-import plotly.express as px
 import math, os
 from datetime import datetime
 
 # Configuration de l'application
-st.set_page_config(page_title="mgGCAPP — Devis Express & Data BTP", page_icon="🏗️", layout="wide")
+st.set_page_config(page_title="mgGCAPP — Devis Express BTP", page_icon="🏗️", layout="wide")
 
 # 1. EN-TÊTE ET SALUTATION
 heure = datetime.now().hour
@@ -24,8 +23,7 @@ with st.expander("❓ **Besoin d'aide ou problème sur le site ? (Aide / Help)**
         st.markdown("##### 📌 Foire Aux Questions (FAQ)")
         st.markdown("""
         - **Comment sont calculés les matériaux ?** Les quantités sont estimées selon les normes BTP adaptées à la superficie et au nombre de pièces.
-        - **Comment sont analysées les données ?** L'application génère des graphiques interactifs pour analyser la répartition financière de votre projet.
-        - **Comment télécharger le devis ?** Cliquez sur le bouton de téléchargement en bas pour enregistrer le fichier HTML/PDF.
+        - **Comment télécharger le devis ?** Cliquez sur le bouton de téléchargement en bas pour enregistrer votre document.
         """)
     
     with col_contact:
@@ -52,7 +50,6 @@ with col_a:
     nom = st.text_input("Nom & Prénom :", value="Client")
     tel = st.text_input("Téléphone / WhatsApp :", placeholder="+237...")
 
-    # Collecte et enregistrement des données visiteurs
     if nom != "Client" and tel:
         fichier_csv = "visiteurs.csv"
         hdr = not os.path.exists(fichier_csv)
@@ -81,7 +78,6 @@ with col_b:
     with cp5:
         nb_verandas = st.number_input("Vérandas :", min_value=0, max_value=10, value=1)
 
-# Options avancées
 with st.expander("⚙️ Préférences techniques et devises (Optionnel)"):
     co1, co2 = st.columns(2)
     with co1:
@@ -127,8 +123,8 @@ total_ht = int(df["Total"].sum())
 
 st.divider()
 
-# 5. ONGLETS : DEVIS & ANALYSE DE DONNÉES
-tab_devis, tab_analyse, tab_admin = st.tabs(["📊 Devis Estimatif", "📈 Analyse des Données", "📁 Historique Visiteurs"])
+# 5. ONGLETS DEVIS & ANALYSE NATIVE
+tab_devis, tab_analyse, tab_admin = st.tabs(["📊 Devis Estimatif", "📈 Analyse des Coûts", "📁 Historique Visiteurs"])
 
 with tab_devis:
     m1, m2, m3, m4 = st.columns(4)
@@ -140,32 +136,21 @@ with tab_devis:
     st.dataframe(df, use_container_width=True)
 
 with tab_analyse:
-    st.subheader("📊 Visualisation et Analyse du Budget")
-    
-    col_chart1, col_chart2 = st.columns(2)
-    
-    with col_chart1:
-        # Représentation des coûts sous forme de camembert (Plotly)
-        fig_pie = px.pie(df, values='Total', names='Matériau', title="Répartition des Coûts par Matériau",
-                         color_discrete_sequence=px.colors.sequential.RdBu)
-        st.plotly_chart(fig_pie, use_container_width=True)
-        
-    with col_chart2:
-        # Histogramme des postes de dépenses
-        fig_bar = px.bar(df, x='Matériau', y='Total', text='Total', title=f"Coût Total par Poste ({devise})",
-                         color='Total', color_continuous_scale='Viridis')
-        st.plotly_chart(fig_bar, use_container_width=True)
+    st.subheader("📊 Visualisation graphique du budget")
+    # Graphique en barres natif de Streamlit (rapide et sans bug)
+    chart_data = df.set_index("Matériau")["Total"]
+    st.bar_chart(chart_data)
 
 with tab_admin:
-    st.subheader("📋 Analyse des Visiteurs Collectés")
+    st.subheader("📋 Visiteurs enregistrés")
     if os.path.exists("visiteurs.csv"):
         df_visiteurs = pd.read_csv("visiteurs.csv")
-        st.write(f"Total des prospects enregistrés : **{len(df_visiteurs)}**")
+        st.write(f"Total des prospects : **{len(df_visiteurs)}**")
         st.dataframe(df_visiteurs, use_container_width=True)
     else:
-        st.info("Aucune donnée visiteur enregistrée pour le moment.")
+        st.info("Aucune donnée visiteur pour le moment.")
 
-# 6. GÉNÉRATION DU DEVIS EN HTML/PDF
+# 6. TÉLÉCHARGEMENT DU DEVIS HTML
 html_pdf = f"""
 <!DOCTYPE html>
 <html>
@@ -227,7 +212,6 @@ html_pdf += f"""
 </html>
 """.replace(",", " ")
 
-# 7. BOUTON DE TÉLÉCHARGEMENT ET CONTACT
 st.divider()
 col_dl, col_info = st.columns([1, 2])
 
