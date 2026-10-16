@@ -114,6 +114,8 @@ ciment_fondation = round(sacs_ciment_total * 0.35)
 ciment_elevation = round(sacs_ciment_total * 0.50)
 ciment_toiture = sacs_ciment_total - (ciment_fouilles + ciment_fondation + ciment_elevation)
 
+cout_toiture = int((ciment_toiture * pu["Ciment"]) + (acier_kg * pu["Acier"] * 0.4) + surf * (12000 if is_fcfa else 20))
+
 data_planning = [
     {
         "Étape du Chantier": "1. Préparation du terrain",
@@ -148,7 +150,7 @@ data_planning = [
         "Personnel Requis": "2 Charpentiers + 3 Manœuvres",
         "Nb Personnel": 5,
         "Sacs de Ciment": ciment_toiture,
-        "Coût Estimé": int((ciment_toiteur = ciment_toiture * pu["Ciment"]) if 'ciment_toiture' in locals() else 0 + (acier_kg * pu["Acier"] * 0.4) + surf * (12000 if is_fcfa else 20))
+        "Coût Estimé": cout_toiture
     }
 ]
 
